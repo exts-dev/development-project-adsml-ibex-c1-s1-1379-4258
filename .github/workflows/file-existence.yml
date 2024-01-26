@@ -1,0 +1,25 @@
+name: The file "hello.txt" exists 
+
+on: push
+
+jobs:
+  check-file-existence-and-modification:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Check if file exists
+        run: |
+
+          # Set the filename to check
+          filename="hello.txt"
+
+          # Check if the file exists
+          if [ -f "$filename" ]; then
+            echo "Required file $filename exists."
+          else
+            echo "The required file $filename is missing or has been named incorrectly."
+            exit 1
+          fi

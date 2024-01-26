@@ -1,0 +1,36 @@
+name: The file "hello.txt" has been modified 
+
+on: push
+
+jobs:
+  check-file-existence-and-modification:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+        with: 
+          # Fetch-depth to fetch all commits for the counter
+          fetch-depth: 0
+
+      - name: Check file modification
+        run: |
+
+          # Set the filename to check
+          filename="hello.txt"
+
+          # Check if the file exists in the latest commit
+          if [ -f "$filename" ]; then
+            change_count=$(git log --oneline $filename | wc -l)
+            # Check if the file has been modified in more than one commit
+            if [ $change_count -gt 1 ]; then
+              echo "The $filename file has been modified in $change_count commits."
+            else
+              echo "No modifications detected in the $filename file across all commits."
+              exit 1
+            fi
+          else
+            echo "The $filename file does not exist in the latest commit."
+            exit 1
+          fi
